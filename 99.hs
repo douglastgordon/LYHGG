@@ -28,3 +28,9 @@ myLength (first:rest) = 1 + myLength rest
 myReverse :: [a] -> [a]
 myReverse [] = []
 myReverse (first:rest) = myReverse rest ++ [first]
+
+-- problem 6
+isPalindrome :: Eq a => [a] -> Bool
+isPalindrome [] = True
+isPalindrome [el] = True
+isPalindrome all@(first:rest) = first == (last all) && isPalindrome (init rest)

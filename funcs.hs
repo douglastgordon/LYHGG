@@ -112,3 +112,8 @@ findTriangle = [(a, b, c) | a <- [1..10], b <- [1..10], c <- [1..10], a <= b, b 
 factorial :: Int -> Int
 factorial 0 = 1
 factorial n = n * factorial (n - 1)
+
+-- quicksort
+quicksort :: Ord a => [a] -> [a]
+quicksort [] = []
+quicksort (first:rest) = (quicksort [n | n <- rest, n <= first]) ++ [first] ++ (quicksort [n | n <- rest, n > first])
