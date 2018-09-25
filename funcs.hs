@@ -107,3 +107,8 @@ zip' (a:rest1) (b:rest2) = (a, b) : (zip' rest1 rest2)
 -- equal to or smaller than 10 has a perimeter of 24?
 findTriangle :: (Int, Int, Int)
 findTriangle = [(a, b, c) | a <- [1..10], b <- [1..10], c <- [1..10], a <= b, b <= c, a + b + c == 24, a^2 + b^2 == c^2] !! 0
+
+-- factorial
+factorial :: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
