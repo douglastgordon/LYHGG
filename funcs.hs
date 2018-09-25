@@ -75,3 +75,35 @@ product' (first:rest) = first * product' rest
 elem' :: Eq a => a -> [a] -> Bool
 elem' a [el] = a == el
 elem' a (first:rest) = a == first || elem' a rest
+
+-- cycle takes a list and cycles it into an infinite list.
+cycle' :: [a] -> [a]
+cycle' list = list ++ (cycle' list)
+
+-- repeat takes an element and produces an infinite list of just that element.
+repeat' :: a -> [a]
+repeat' a = a : (repeat' a)
+
+-- replicate takes a number n and a value and produces a list consisting only of that value, length n
+replicate' :: Int -> a -> [a]
+replicate' 0 _ = []
+replicate' n el = el : (replicate' (n - 1) el)
+
+-- fst takes a pair and returns its first component.
+fst' :: (a, b) -> a
+fst' (a, _) = a
+
+-- snd takes a pair and returns its second component.
+snd' :: (a, b) -> b
+snd' (_, b) = b
+
+-- zip takes two lists and then zips them together into one list by joining the matching elements into pairs.
+zip' :: [a] -> [b] -> [(a, b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (a:rest1) (b:rest2) = (a, b) : (zip' rest1 rest2)
+
+-- which right triangle that has integers for all sides and all sides
+-- equal to or smaller than 10 has a perimeter of 24?
+findTriangle :: (Int, Int, Int)
+findTriangle = [(a, b, c) | a <- [1..10], b <- [1..10], c <- [1..10], a <= b, b <= c, a + b + c == 24, a^2 + b^2 == c^2] !! 0
