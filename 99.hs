@@ -43,3 +43,11 @@ compress :: Eq a => [a] -> [a]
 compress = foldr (\el acc -> if (length acc == 0) || (head acc) /= el then el : acc else acc) []
 
 -- problem 9
+pack :: Eq a => [a] -> [[a]]
+pack = foldl (\acc el -> if (length (last acc)) /= 0 && el /= (last $ last acc)
+                         then acc ++ [[el]]
+                         else (init acc) ++ [(el : (last acc))]) [[]]
+
+-- problem 10
+encode :: Eq a => [a] -> [(Int, a)]
+encode = map (\all@(x:xs) -> (length all, x)) . pack
