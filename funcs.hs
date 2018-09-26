@@ -117,3 +117,90 @@ factorial n = n * factorial (n - 1)
 quicksort :: Ord a => [a] -> [a]
 quicksort [] = []
 quicksort (first:rest) = (quicksort [n | n <- rest, n <= first]) ++ [first] ++ (quicksort [n | n <- rest, n > first])
+
+-- zipWith takes a function and two lists as parameters and then joins the two lists by applying the function between corresponding elements.
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' fn (a:rest1) (b:rest2) = (fn a b) : (zipWith' fn rest1 rest2)
+
+-- flip takes a function and returns a function that is like our original function, only the first two arguments are flipped
+flip' :: (a -> b -> c) -> (b -> a -> c)
+flip' fn a b = fn b a
+
+-- map takes a function and a list and applies that function to every element in the list, producing a new list.
+map' :: (a -> b) -> [a] -> [b]
+map' fn list = [fn a | a <- list]
+
+-- filter is a function that takes a predicate and a list and then returns the list of elements that satisfy the predicate.
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' fn list = [a | a <- list, fn a]
+
+-- find the largest number under 100,000 that's divisible by 3829
+-- findNum :: Int
+findNum = head (filter' divisible [100000,99999..0])
+          where divisible x = x `mod` 3829 == 0
+
+-- takeWhile takes a predicate and a list and then goes from the beginning of the list and returns its elements while the predicate holds true.
+takeWhile' :: (a -> Bool) -> [a] -> [a]
+takeWhile' fn (x:xs)
+  | fn x  = x : (takeWhile' fn xs)
+  | otherwise = []
+
+-- find the sum of all odd squares that are smaller than 10,000
+sumOddSquares :: Int
+sumOddSquares = sum (takeWhile (<10000) (map (^2) [1,3..]))
+
+-- collatz chain: take a num, if that number is even, we divide it by two. If it's odd, we multiply it by 3 and then add 1 to that.
+-- for all starting numbers between 1 and 100, how many chains have a collatz chain length greater than 15?
+
+collatz :: Int -> [Int]
+collatz 1 = [1]
+collatz n = [n] ++ collatz (if odd n then ((n * 3) + 1) else (n `div` 2))
+
+bigCollatzChains :: Int
+bigCollatzChains = length (filter (>15) (map (length . collatz) [1..100]))
+
+-- foldl reduces list to value from left
+foldl' :: (a -> b -> a) -> a -> [b] -> a
+foldl' _ acc [] = acc
+foldl' fn acc (x:xs) = foldl' fn (fn acc x) xs
+
+-- foldl1 reduces list to value from left with accumulator inititialized to first val of arr
+foldl1' :: (a -> a -> a) -> [a] -> a
+foldl1' _ [] = error "Can't reduce empty list"
+foldl1' _ [a] = a
+foldl1' fn (first:second:xs) = foldl1' fn ((fn first second) : xs)
+
+-- foldr reduces list to value from right
+foldr' :: (b -> a -> a) -> a -> [b] -> a
+foldr' _ acc [] = acc
+foldr' fn acc xs = foldr' fn (fn (last xs) acc) (init xs)
+
+-- foldr1 reduces list to value from left with accumulator inititialized to first val of arr
+foldr1' :: (a -> a -> a) -> [a] -> a
+foldr1' _ [] = error "Can't reduce empty list"
+foldr1' _ [a] = a
+foldr1' fn xs = foldr1' fn (init (init xs) ++ [fn ultimate penultimate])
+              where ultimate = last xs
+                    penultimate = last (init xs)
+
+
+maximum'' :: Ord a => [a] -> a
+maximum'' = foldl1 (\acc el -> if acc > el then acc else el)
+
+reverse'' :: [a] -> [a]
+reverse'' = foldl (\acc x -> x : acc) []
+
+product'' :: Num a => [a] -> a
+product'' = foldr1 (*)
+
+-- scanl - like foldl but reports all the intermediate accumulator states in the form of a list.
+scanl' :: (a -> b -> a) -> a -> [b] -> [a]
+scanl' _ _ [] = []
+scanl' fn acc (x:xs) = (scanl' fn newAcc xs) ++ [newAcc]
+                     where newAcc = fn acc x
+
+-- How many elements does it take for the sum of the roots of all natural numbers to exceed 1000?
+-- sumElements :: Int
+sumElements = length $ takeWhile (<1000) (scanl1 (+) (map (**0.5)[1..])) + 1

@@ -34,3 +34,12 @@ isPalindrome :: Eq a => [a] -> Bool
 isPalindrome [] = True
 isPalindrome [el] = True
 isPalindrome all@(first:rest) = first == (last all) && isPalindrome (init rest)
+
+-- problem 7 - come back after learning type stuff
+
+
+-- problem 8
+compress :: Eq a => [a] -> [a]
+compress = foldr (\el acc -> if (length acc == 0) || (head acc) /= el then el : acc else acc) []
+
+-- problem 9
