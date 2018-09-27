@@ -203,4 +203,60 @@ scanl' fn acc (x:xs) = (scanl' fn newAcc xs) ++ [newAcc]
 
 -- How many elements does it take for the sum of the roots of all natural numbers to exceed 1000?
 -- sumElements :: Int
-sumElements = length $ takeWhile (<1000) (scanl1 (+) (map (**0.5)[1..])) + 1
+-- sumElements = length $ takeWhile (<1000) (scanl1 (+) (map (**0.5)[1..])) + 1
+
+-- nub takes a list and removes duplicates (from Data.List)
+nub' :: Eq a => [a] -> [a]
+nub' [] = []
+nub' (x:xs) = x : nub' [n | n <- xs, n /= x]
+
+-- intersperse takes an element and a list and then puts that element in between each pair of elements in the list. (from Data.List)
+intersperse' :: a -> [a] -> [a]
+intersperse' a = init . foldr (\el acc -> el : a : acc) []
+
+-- intercalate takes a list of lists and a list. It then inserts that list in between all those lists and then flattens the result. (from Data.List)
+intercalate' :: [a] -> [[a]] -> [a]
+intercalate' a list = foldl (\acc (el, idx) -> if idx /= length list then acc ++ el ++ a else acc ++ el) [] (zip list [1..])
+
+-- transpose transposes a list of lists. (from Data.List)
+transpose' :: [[a]] -> [[a]]
+transpose' list = map (\(_, x) -> map (\row -> row !! x) list)  (zip list [0..])
+
+
+-- concat flattens a list of lists into just a list of elements.(from Data.List)
+concat' :: [[a]] -> [a]
+concat' = foldl1 (\acc el -> acc ++ el)
+
+-- concatMap is the same as first mapping a function to a list and then concatenating the list with concat (from Data.List)
+concatMap' :: (a -> [b]) -> [a] -> [b]
+concatMap' fn = concat . map fn
+
+-- and takes a list of boolean values and returns True only if all the values in the list are True. (from Data.List)
+and' :: [Bool] -> Bool
+and' = foldr1 (\el acc -> acc && el)
+
+-- or is like and, only it returns True if any of the boolean values in a list is True. (from Data.List)
+or' :: [Bool] -> Bool
+or' = foldr1 (\el acc -> acc || el)
+
+-- any and all take a predicate and then check if any or all the elements in a list satisfy the predicate, respectively. (from Data.List)
+any' :: (a -> Bool) -> [a] -> Bool
+any' fn = or' . map fn
+
+all' :: (a -> Bool) -> [a] -> Bool
+all' fn = and' . map fn
+
+-- iterate takes a function and a starting value. It applies the function to the starting value, then it applies that function to the result, then it applies the function to that result again, etc. It returns all the results in the form of an infinite list. (from Data.List)
+iterate' :: (a -> a) -> a -> [a]
+iterate' fn x = x : iterate fn (fn x)
+
+-- splitAt takes a number and a list. It then splits the list at that many elements, returning the resulting two lists in a tuple. (from Data.List)
+splitAt' :: Int -> [a] -> ([a], [a])
+splitAt' n list = ([x | (x, idx) <- zip list [1..], idx <= n], [x | (x, idx) <- zip list [1..], idx > n])
+
+-- dropWhile is similar, only it drops all the elements while the predicate is true.  from Data.List
+dropWhile' :: (a -> Bool) -> [a] -> [a]
+dropWhile' fn all@(x:xs)
+    | length all == 0 = []
+    | fn x = dropWhile fn xs
+    | otherwise = all

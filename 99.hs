@@ -96,3 +96,8 @@ range :: Int -> Int -> [Int]
 range a b = [a..b]
 
 -- problem 23, 24, 25 - come back after learning randomness
+
+-- problem 26
+-- combinations :: k -> [a] -> [[a]]
+-- combinations 0 _ = [[]]
+-- combinations k list = map (\el -> el : co)
