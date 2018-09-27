@@ -260,3 +260,55 @@ dropWhile' fn all@(x:xs)
     | length all == 0 = []
     | fn x = dropWhile fn xs
     | otherwise = all
+
+-- span
+-- break
+
+-- inits and tails are like init and tail, only they recursively apply that to a list until there's nothing left.
+inits' :: [a] -> [[a]]
+inits' [] = [[]]
+inits' list = inits' (tail list) ++ [list]
+
+tails' :: [a] -> [[a]]
+tails' [] = [[]]
+tails' all@(x:xs) = [all] ++ tails' xs
+
+
+-- isInfixOf searches for a sublist within a list and returns True if the sublist we're looking for is somewhere inside the target list.
+isInfixOf' :: Eq a => [a] -> [a] -> Bool
+isInfixOf' sublist [] = False
+isInfixOf' sublist list@(x:xs) = (sublist == (take (length sublist) list)) || isInfixOf' xs sublist
+
+-- isPrefixOf and isSuffixOf search for a sublist at the beginning and at the end of a list, respectively.
+isPrefixOf' :: Eq a => [a] -> [a] -> Bool
+isPrefixOf' sublist list = sublist == take (length sublist) list
+
+isSuffixOf' :: Eq a => [a] -> [a] -> Bool
+isSuffixOf' sublist list = drop (length list - length sublist) list == sublist
+
+-- elem and notElem check if an element is or isn't inside a list.
+-- elem' :: Eq a => a -> [a] -> Bool
+-- elem' a (x:xs) = a == x || elem' a xs
+
+notElem' :: Eq a =>  a -> [a] -> Bool
+notElem' a (x:xs) = a /= x && notElem' a xs
+
+-- partition takes a list and a predicate and returns a pair of lists. The first list in the result contains all the elements that satisfy the predicate, the second contains all the ones that don't.
+partition' :: (a -> Bool) -> [a] -> ([a], [a])
+partition' fn = foldl (\(yesses, nos) el -> if (fn el == True)
+                                             then (yesses ++ [el], nos)
+                                             else (nos, yesses ++ [el])) ([], [])
+
+-- find takes a list and a predicate and returns the first element that satisfies the predicate.
+-- find' :: [a] -> (a -> Bool) -> Maybe a
+-- find' [] _ = Nothing
+-- find' (x:xs) fn = if fn x then Just x else find' xs fn
+
+-- elemIndices is like elemIndex, only it returns a list of indices, in case the element we're looking for crops up in our list several times.
+elemIndices' :: Eq a => a -> [a] -> [Int]
+elemIndices' el list = [idx | (x, idx) <- zip list [0..], x == el]
+
+-- delete takes an element and a list and deletes the first occurence of that element in the list.
+delete' :: Eq a => a -> [a] -> [a]
+delete' _ [] = []
+delete' n (x:xs) = if n == x then xs else x : delete' n xs
