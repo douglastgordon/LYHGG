@@ -1,6 +1,7 @@
 -- 99 Haskell Problems
 import Data.List
 import Data.Function
+import Data.Maybe
 
 -- problem 1
 myLast :: [a] -> a
@@ -145,3 +146,88 @@ lsort = sortBy (compare `on` length)
 
 -- problem 28b
 -- lfsort :: [[a]] -> [[a]]
+
+-- problem 31
+isPrime :: Int -> Bool
+isPrime n
+  | n < 2 || n /= 2 && n `mod` 2 == 0 = False
+  | n == 2 || n == 3 = True
+  | otherwise = foldl (\acc divisor -> (n `mod` divisor /= 0) && acc) True [2..(floor . sqrt $ fromIntegral n)]
+
+-- problem 32
+myGCD :: Int -> Int -> Int
+myGCD a b
+  | a == b = a
+  | otherwise = myGCD smaller (larger - smaller)
+    where smaller = min a b
+          larger = max a b
+
+-- problem 33
+coprime :: Int -> Int -> Bool
+coprime a b = myGCD a b == 1
+
+-- problem 34
+totient :: Int -> Int
+totient n = length $ filter (coprime n) [1..(n - 1)]
+
+-- problem 35
+primeFactors :: Int -> [Int]
+primeFactors n = if isPrime n then [n] else spf : primeFactors (n `div` spf)
+               where spf = smallestPrimeFactor n
+
+smallestPrimeFactor :: Int -> Int
+smallestPrimeFactor n = head $ filter (\x -> n `mod` x == 0 && isPrime x) [2..n]
+
+-- problem 36
+prime_factors_mult :: Int -> [(Int, Int)]
+prime_factors_mult = encode . primeFactors
+
+-- problem 37 + 38
+phi :: Int -> Int
+phi n = foldl (\acc (m, p) -> acc * ((p - 1) * p ^ (m - 1))) 1 (prime_factors_mult n)
+
+-- problem 39
+primesR :: Int -> Int -> [Int]
+primesR low high = filter isPrime [low..high]
+
+-- problem 40
+goldbach :: Int -> (Int, Int)
+goldbach n = head [(x, y) | x <- primes, y <- primes, x + y == n]
+             where primes = primesR 0 n
+
+-- problem 41 -- 1489
+goldbachList :: Int -> Int -> [(Int, Int)]
+goldbachList a b = map goldbach (filter even [a..b])
+
+data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show, Eq)
+
+-- problem 54
+-- no problem
+
+-- problem 55
+-- cBalTree :: Int -> [(Tree Char)]
+-- cBalTree 0 = [Empty]
+-- cBalTree 1 = [(Node 'x' Empty Empty)]
+-- cBalTree 2 = [Node 'x' (Node 'x' Empty Empty) (Empty), Node 'x' (Empty) (Node 'x' Empty Empty)]
+-- cBalTree n = map (\x (a, b) -> (Node 'x' a b)) (if n `mod` 2 == 1
+--                                                then [(cBalTree halfN, cBalTree halfN)]
+--                                              else [(cBalTree littleHalf, cBalTree bigHalf), (cBalTree bigHalf, cBalTree littleHalf)])
+--                                              where halfN = ((n - 1) `div` 2)
+--                                                    bigHalf = (ceiling ((n - 1) / 2))
+--                                                    littleHalf = (floor ((n - 1) / 2))
+
+-- problem 56
+symmetric :: (Eq a) => (Tree a) -> Bool
+symmetric (Empty) = True
+symmetric (Node _ a b) = mirror a b
+
+mirror :: (Eq a) => (Tree a) -> (Tree a) -> Bool
+mirror (Empty) (Empty) = True
+mirror (Empty) (Node _ _ _) = False
+mirror (Node _ _ _) (Empty) = False
+mirror (Node val1 left1 right1) (Node val2 left2 right2) = val1 == val2 && mirror left1 right2 && mirror left2 right1
+
+-- symmetric (Node 'x' (Node 'x' Empty Empty) Empty)
+-- False
+-- symmetric (Node 'x' (Node 'x' Empty Empty) (Node 'x' Empty Empty))
+-- True
