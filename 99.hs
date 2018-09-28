@@ -1,4 +1,6 @@
 -- 99 Haskell Problems
+import Data.List
+import Data.Function
 
 -- problem 1
 myLast :: [a] -> a
@@ -37,6 +39,12 @@ isPalindrome all@(first:rest) = first == (last all) && isPalindrome (init rest)
 
 -- problem 7 - come back after learning type stuff
 
+data NestedList a = Elem a | List [NestedList a]
+flatten :: NestedList a -> [a]
+flatten (Elem a) = [a]
+flatten (List (x:xs)) = flatten x ++ flatten (List xs)
+flatten (List []) = []
+
 -- problem 8
 compress :: Eq a => [a] -> [a]
 compress = foldr (\el acc -> if (length acc == 0) || (head acc) /= el then el : acc else acc) []
@@ -51,7 +59,39 @@ pack = foldl (\acc el -> if (length (last acc)) /= 0 && el /= (last $ last acc)
 encode :: Eq a => [a] -> [(Int, a)]
 encode = map (\all@(x:xs) -> (length all, x)) . pack
 
--- problems 11 - 13 - come back after learning type stuff
+-- problem 11
+data Encoding v = Single v | Multiple Int v deriving Show
+encodeModified :: [(Int, a)] -> [Encoding a]
+encodeModified = map (\(n, v) -> if n == 1 then (Single v) else Multiple n v)
+
+-- problem 12
+decodeModified :: [Encoding a] -> [(Int, a)]
+decodeModified = map (decodeSingle)
+
+decodeSingle :: Encoding a -> (Int, a)
+decodeSingle (Single v) = (1, v)
+decodeSingle (Multiple n v) = (n, v)
+
+-- problem 13
+encodingValue :: Encoding a -> a
+encodingValue (Single v) = v
+encodingValue (Multiple _ v) = v
+
+encodingCount :: Encoding a -> Int
+encodingCount (Single _) = 1
+encodingCount (Multiple n _) = n
+
+increaseCount :: Encoding a -> Encoding a
+increaseCount (Single v) = Multiple 2 v
+increaseCount (Multiple n v) = Multiple (n + 1) v
+
+encodeDirect :: Eq a => [a] -> [Encoding a]
+encodeDirect = foldl (\acc el ->
+                        if length acc == 0 || encodingValue (last acc) /= el
+                          then acc ++ [Single el]
+                        else (init acc) ++ [(increaseCount (last acc))]
+                      ) []
+
 
 -- problem 14
 dupli :: [a] -> [a]
@@ -97,7 +137,11 @@ range a b = [a..b]
 
 -- problem 23, 24, 25 - come back after learning randomness
 
--- problem 26
--- combinations :: k -> [a] -> [[a]]
--- combinations 0 _ = [[]]
--- combinations k list = map (\el -> el : co)
+-- problem 26 - 27 - come back after learning probability
+
+-- problem 28a
+lsort :: [[a]] -> [[a]]
+lsort = sortBy (compare `on` length)
+
+-- problem 28b
+-- lfsort :: [[a]] -> [[a]]

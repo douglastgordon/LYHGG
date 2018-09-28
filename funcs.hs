@@ -312,3 +312,5 @@ elemIndices' el list = [idx | (x, idx) <- zip list [0..], x == el]
 delete' :: Eq a => a -> [a] -> [a]
 delete' _ [] = []
 delete' n (x:xs) = if n == x then xs else x : delete' n xs
+
+data Tree a = EmptyTree |  Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
