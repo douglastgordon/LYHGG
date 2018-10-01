@@ -314,3 +314,7 @@ delete' _ [] = []
 delete' n (x:xs) = if n == x then xs else x : delete' n xs
 
 data Tree a = EmptyTree |  Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
+
+extractInt :: Maybe (Int) -> Int
+extractInt Nothing = 0
+extractInt (Just a) = a
