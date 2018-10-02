@@ -22,10 +22,15 @@ rollDie' gen = do
 tenRandomChars :: StdGen -> String
 tenRandomChars gen = take 10 $ randomRs ('a', 'z') gen
 
+randomInRange :: Num a => a -> StdGen -> Int
+randomInRange limit gen = fst $ randomR (0, limit) gen  :: (Int, StdGen)
+
 -- main = do
 --   gen <- getStdGen
 --   putStr $ take 10 $ randomRs ('a', 'z') gen
 
 main = do
   gen <- getStdGen
-  rollDie' gen
+  range <- getLine
+  randomInRange' (read range) gen
+  random
