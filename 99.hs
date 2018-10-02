@@ -199,7 +199,52 @@ goldbach n = head [(x, y) | x <- primes, y <- primes, x + y == n]
 goldbachList :: Int -> Int -> [(Int, Int)]
 goldbachList a b = map goldbach (filter even [a..b])
 
+-- problem 46
+and' :: Bool -> Bool -> Bool
+and' True True = True
+and' _ _ = False
+
+or' :: Bool -> Bool -> Bool
+or' True _ = True
+or' _ True = True
+or' _ _ = False
+
+not' :: Bool -> Bool
+not' False = True
+not' True = False
+
+nand' :: Bool -> Bool -> Bool
+nand' a b = not' $ and' a b
+
+nor' :: Bool -> Bool -> Bool
+nor' a b = not' $ or' a b
+
+xor' :: Bool -> Bool -> Bool
+xor' a b = and' (or' a b) (nand' a b)
+
+impl' :: Bool -> Bool -> Bool
+impl' True False = False
+impl' _ _ = True
+
+equ' :: Bool -> Bool -> Bool
+equ' a b
+  | a == b = True
+  | otherwise = False
+
+predicateTable :: (Bool -> Bool -> Bool) -> [[Bool]]
+predicateTable predA = map (applyPred predA) table
+                     where table = [[False, False], [True, False], [False, True], [True, True]]
+
+applyPred :: (Bool -> Bool -> Bool) -> [Bool] -> [Bool]
+applyPred predicate [a,b] = [a, b, predicate a b]
+
 data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show, Eq)
+
+-- problem 47
+infixl 4 `or'`
+infixl 6 `and'`
+
+-- problem 48
 
 -- problem 54
 -- no problem
@@ -231,3 +276,13 @@ mirror (Node val1 left1 right1) (Node val2 left2 right2) = val1 == val2 && mirro
 -- False
 -- symmetric (Node 'x' (Node 'x' Empty Empty) (Node 'x' Empty Empty))
 -- True
+
+-- problem 90
+-- queens :: Int
+-- queens = filter (oneGreater) (permutations [1..8])
+--
+-- oneGreater :: [Int] -> Bool
+-- oneGreater list = reduce (\acc [el, idx] -> acc && notApart acc arrWithIdx) arrWithIdx
+--                 where arrWithIdx = zip (list [0..9])
+--
+-- arrWithIdx =

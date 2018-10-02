@@ -318,3 +318,9 @@ data Tree a = EmptyTree |  Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
 extractInt :: Maybe (Int) -> Int
 extractInt Nothing = 0
 extractInt (Just a) = a
+
+-- putStr' :: String -> IO ()
+-- putStr'
+
+putChar' :: Char -> IO Char
+putChar' x = IO x
